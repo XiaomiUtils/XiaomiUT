@@ -21,19 +21,8 @@
 
 ## 🛠 Tech Stack
 
-### Frontend
-
 * **Framework:** [React 18](https://reactjs.org/) (Vite)
 * **Language:** [TypeScript](https://www.typescriptlang.org/)
 * **UI Library:** [Ant Design (antd)](https://ant.design/)
 * **Icons:** [@ant-design/icons](https://ant-design.github.io/icons/)
 * **HTTP Client:** [Axios](https://axios-http.com/) (for API calls)
-
-### Backend (Proxy)
-
-* **Platform:** [Firebase Functions](https://firebase.google.com/docs/functions)
-* **Runtime:** Node.js
-* **Framework:** [Express.js](https://expressjs.com/)
-* **Libraries:**
-  * `cors` — for handling Cross-Origin Resource Sharing.
-  * `firebase-admin` — for Firebase integration.

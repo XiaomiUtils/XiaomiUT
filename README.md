@@ -26,7 +26,6 @@
 * **Framework:** [React 18](https://reactjs.org/) (Vite)
 * **Language:** [TypeScript](https://www.typescriptlang.org/)
 * **Icons:** [@ant-design/icons](https://ant-design.github.io/icons/)
-* **HTTP Client:** [Axios](https://axios-http.com/) (for API calls)
 
 ### Proxy:
 

@@ -62,7 +62,7 @@ If you prefer using your own backend (Nginx, Node.js, PHP), ensure it:
 1. Clone the repository:
 
 ```sh
-git clone [https://github.com/your-username/XiaomiUT.git](https://github.com/your-username/XiaomiUT.git)
+git clone [https://github.com/XiaomiUtils/XiaomiUT.git](https://github.com/XiaomiUtils/XiaomiUT.git)
 cd XiaomiUT/frontend
 ```
 

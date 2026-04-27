@@ -21,8 +21,67 @@
 
 ## 🛠 Tech Stack
 
+### Frontend:
+
 * **Framework:** [React 18](https://reactjs.org/) (Vite)
 * **Language:** [TypeScript](https://www.typescriptlang.org/)
-* **UI Library:** [Ant Design (antd)](https://ant.design/)
 * **Icons:** [@ant-design/icons](https://ant-design.github.io/icons/)
 * **HTTP Client:** [Axios](https://axios-http.com/) (for API calls)
+
+### Proxy:
+
+* **Platform:** [Cloudflare Workers](https://workers.cloudflare.com/)
+* **Runtime:** Edge Runtime (JavaScript)
+
+## Getting Started
+
+### 1. Proxy Configuration
+
+Xiaomi API servers have no CORS policies and browser block direct requests. You have two options:
+
+#### Option A: Use Cloudflare Workers (Fastest)
+
+1. Create a new Worker in your Cloudflare dashboard.
+2. Copy the logic from `proxy/workers.js` to your worker.
+3. **Important:** Update the `Access-Control-Allow-Origin` header to match your site's domain to ensure proper CORS security:
+
+   ```javascript
+   newResponse.headers.set("Access-Control-Allow-Origin", "[https://your-domain.com](https://your-domain.com)");
+   ```
+4. Deploy and copy the Worker URL.
+
+#### Option B: Use your own Proxy
+
+If you prefer using your own backend (Nginx, Node.js, PHP), ensure it:
+
+* Forwards requests to `update.miui.com` and etc
+* Sets User-Agent: `Xiaomi-Update/3.0`
+* Handles CORS preflight (OPTIONS requests)
+
+### 2. Frontend Setup
+
+1. Clone the repository:
+
+```sh
+git clone [https://github.com/your-username/XiaomiUT.git](https://github.com/your-username/XiaomiUT.git)
+cd XiaomiUT/frontend
+```
+
+2. Open `src/config.ts` and point the URLs to your proxy:
+
+```typescript
+export const API_CONFIG = {
+    OTA_BASE_URL: '[https://your-proxy.com/ota](https://your-proxy.com/ota)',
+    FASTBOOT_BASE_URL: '[https://your-proxy.com/fastboot](https://your-proxy.com/fastboot)',
+    TIMEOUT: 5000,
+};
+```
+
+3. Install and build:
+
+    ```sh
+    npm install
+    npm run build
+   ```
+
+4. Deploy your `frontend/dist` to your hosting

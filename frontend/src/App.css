@@ -1,11 +1,19 @@
 :root {
   --accent: #646cff;
+  --bg-color: rgb(25, 20, 20);
   --accent-bg: rgba(100, 108, 255, 0.1);
   --border: rgba(255, 255, 255, 0.1);
   --social-bg: #1a1a1a;
   --text: #888;
   --text-h: #fff;
   --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text);
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 #center {

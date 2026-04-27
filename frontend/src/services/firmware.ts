@@ -1,4 +1,5 @@
 import { miuiEncrypt, miuiDecrypt } from '../utils/miuiCrypto';
+import { API_CONFIG } from '../config';
 
 export interface FirmwareData {
     device: string;
@@ -58,7 +59,10 @@ const parseOtaVersion = (version: string) => {
 };
 
 export const fetchFirmware = async (type: 'fastboot' | 'ota', params: any): Promise<FirmwareData> => {
-    const endpoint = type === 'fastboot' ? '/api/fastboot' : '/api/ota';
+    const baseUrl = type === 'fastboot' ? API_CONFIG.FASTBOOT_BASE_URL : API_CONFIG.OTA_BASE_URL;
+    const endpoint = type === 'fastboot'
+        ? `${baseUrl}/updates/miota-fullrom.php`
+        : `${baseUrl}/updates/miotaV3.php`;
 
     try {
         if (type === 'ota') {

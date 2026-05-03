@@ -97,7 +97,7 @@ const parseOtaVersion = (version: string) => {
  * @returns 清理后的设备记录数组，出错时返回空数组。
  */
 export const fetchFastbootList = async (): Promise<FastbootDevice[]> => {
-    const endpoint = `${API_CONFIG.FASTBOOT_BASE_URL}/fastboot/getlinepackagelist`;
+    const endpoint = `${API_CONFIG.FASTBOOT_BASE_URL}/getlinepackagelist`;
 
     try {
         const response = await fetch(endpoint, { method: 'GET' });
@@ -136,7 +136,7 @@ export const fetchFastbootList = async (): Promise<FastbootDevice[]> => {
  * 请求指定设备的 OTA 固件信息。
  */
 export const fetchFirmware = async (params: { d: string; v: string }): Promise<FirmwareData> => {
-    const endpoint = `${API_CONFIG.OTA_BASE_URL}/ota/updates/miotaV3.php`;
+    const endpoint = `${API_CONFIG.OTA_BASE_URL}/updates/miotaV3.php`;
 
     try {
         const parsed = parseOtaVersion(params.v);

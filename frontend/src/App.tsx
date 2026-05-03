@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import {
   SearchOutlined,
@@ -6,57 +6,67 @@ import {
   GlobalOutlined,
   GithubOutlined,
   InfoCircleOutlined,
-  ThunderboltOutlined
+  ThunderboltOutlined,
+  LoadingOutlined,
 } from '@ant-design/icons';
 import './App.css';
-import { fetchFirmware } from './services/firmware';
-import type { FirmwareData } from './services/firmware';
+import { fetchFirmware, fetchFastbootList } from './services/firmware';
+import type { FirmwareData, FastbootDevice } from './services/firmware';
 
 function App() {
   const [formType, setFormType] = useState<'fastboot' | 'ota'>('fastboot');
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<FirmwareData | null>(null);
 
-  const [codename, setCodename] = useState('');
-  const [region, setRegion] = useState('_global');
-  const [isOld, setIsOld] = useState('1');
-  const [otaVersion, setOtaVersion] = useState('');
+  const [fastbootDevices, setFastbootDevices]   = useState<FastbootDevice[]>([]);
+  const [fastbootLoading, setFastbootLoading]   = useState(true);
+  const [fastbootError, setFastbootError]       = useState<string | null>(null);
+  const [fastbootFilter, setFastbootFilter]     = useState('');
+  const [selectedDevice, setSelectedDevice]     = useState<FastbootDevice | null>(null);
 
-  const handleSearch = async (e: FormEvent) => {
+  const [otaCodename, setOtaCodename] = useState('');
+  const [otaVersion, setOtaVersion]   = useState('');
+  const [otaLoading, setOtaLoading]   = useState(false);
+  const [otaResult, setOtaResult]     = useState<FirmwareData | null>(null);
+
+  useEffect(() => {
+    setFastbootLoading(true);
+    setFastbootError(null);
+
+    fetchFastbootList()
+      .then((devices) => {
+        if (devices.length === 0) {
+          setFastbootError('Device list is empty or unavailable.');
+        } else {
+          setFastbootDevices(devices);
+        }
+      })
+      .catch((err) => {
+        setFastbootError(String(err));
+      })
+      .finally(() => setFastbootLoading(false));
+  }, []);
+
+  const filteredDevices = fastbootDevices.filter((d) =>
+    d.name.toLowerCase().includes(fastbootFilter.toLowerCase())
+  );
+
+  const handleOtaSearch = async (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setResult(null);
+    setOtaLoading(true);
+    setOtaResult(null);
 
-    try {
-      let data: FirmwareData;
-      if (formType === 'fastboot') {
-        const regionMap: Record<string, string> = {
-          "_global": "global",
-          "_ru_global": isOld === "0" ? "global" : "ru",
-          "_eea_global": "eea",
-          "_tw_global": "tw",
-          "_id_global": isOld === "0" ? "global" : "id",
-          "_in_global": "in",
-        };
+    const data = await fetchFirmware({
+      v: otaVersion.trim().toUpperCase(),
+      d: otaCodename.trim().toLowerCase(),
+    });
 
-        data = await fetchFirmware('fastboot', {
-          d: codename.trim().toLowerCase() + region,
-          b: "F",
-          r: regionMap[region] || "cn",
-          l: "en-en"
-        });
-      } else {
-        data = await fetchFirmware('ota', {
-          v: otaVersion.trim().toUpperCase(),
-          d: codename.trim().toLowerCase()
-        });
-      }
-      setResult(data);
-    } catch (error) {
-      setResult({ error: String(error) } as FirmwareData);
-    } finally {
-      setLoading(false);
-    }
+    setOtaResult(data);
+    setOtaLoading(false);
+  };
+
+  const switchTab = (tab: 'fastboot' | 'ota') => {
+    setFormType(tab);
+    setOtaResult(null);
+    setSelectedDevice(null);
   };
 
   return (
@@ -68,115 +78,181 @@ function App() {
 
         <div className="main-card">
           <div className="search-container">
+
             <div className="type-selector">
               <button
                 className={formType === 'fastboot' ? 'active' : ''}
-                onClick={() => { setFormType('fastboot'); setResult(null); }}
+                onClick={() => switchTab('fastboot')}
               >
                 <ThunderboltOutlined /> Fastboot
               </button>
               <button
                 className={formType === 'ota' ? 'active' : ''}
-                onClick={() => { setFormType('ota'); setResult(null); }}
+                onClick={() => switchTab('ota')}
               >
                 <DownloadOutlined /> OTA
               </button>
             </div>
 
-            <form onSubmit={handleSearch} className="firmware-form">
-              <div className="input-wrapper">
-                <SearchOutlined className="input-icon" />
-                <input
-                  type="text"
-                  placeholder="Device Codename (e.g. sweet)"
-                  value={codename}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setCodename(e.target.value)}
-                  required
-                />
-              </div>
-
-              {formType === 'fastboot' ? (
-                <>
-                  <div className="input-wrapper">
-                    <GlobalOutlined className="input-icon" />
-                    <select value={region} onChange={(e: ChangeEvent<HTMLSelectElement>) => setRegion(e.target.value)}>
-                      <option value="_global">Global</option>
-                      <option value="_eea_global">Europe (EEA)</option>
-                      <option value="_ru_global">Russia (RU)</option>
-                      <option value="_in_global">India (IN)</option>
-                      <option value="">China</option>
-                    </select>
+          
+            {formType === 'fastboot' && (
+              <div className="fastboot-picker">
+                {fastbootLoading && (
+                  <div className="fastboot-status">
+                    <LoadingOutlined spin /> Loading device list...
                   </div>
-                  {(region === '_id_global' || region === '_ru_global') && (
-                    <select value={isOld} onChange={(e: ChangeEvent<HTMLSelectElement>) => setIsOld(e.target.value)}>
-                      <option value="1">HyperOS / New</option>
-                      <option value="0">MIUI / Old</option>
-                    </select>
-                  )}
-                </>
-              ) : (
-                <input
-                  type="text"
-                  placeholder="Version (e.g. OS1.0.1.0...)"
-                  value={otaVersion}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setOtaVersion(e.target.value)}
-                  required
-                />
-              )}
+                )}
 
-              <button type="submit" className="counter search-btn" disabled={loading}>
-                {loading ? 'Searching...' : <><SearchOutlined /> Find Firmware</>}
-              </button>
-            </form>
+                {fastbootError && !fastbootLoading && (
+                  <div className="fastboot-status error">
+                    ❌ {fastbootError}
+                  </div>
+                )}
+
+                {!fastbootLoading && !fastbootError && (
+                  <>
+                    <div className="input-wrapper">
+                      <SearchOutlined className="input-icon" />
+                      <input
+                        type="text"
+                        placeholder={`Search ${fastbootDevices.length} devices...`}
+                        value={fastbootFilter}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                          setFastbootFilter(e.target.value);
+                          setSelectedDevice(null);
+                        }}
+                      />
+                    </div>
+
+                    <select
+                      className="device-listbox"
+                      size={6}
+                      value={selectedDevice?.id ?? ''}
+                      onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                        const device = filteredDevices.find(
+                          (d) => d.id === Number(e.target.value)
+                        );
+                        setSelectedDevice(device ?? null);
+                      }}
+                    >
+                      {filteredDevices.length === 0 ? (
+                        <option disabled value="">No devices match your search</option>
+                      ) : (
+                        filteredDevices.map((d) => (
+                          <option key={d.id} value={d.id}>
+                            {d.name}
+                          </option>
+                        ))
+                      )}
+                    </select>
+
+                    <div className="device-count">
+                      {filteredDevices.length} / {fastbootDevices.length} devices
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {formType === 'ota' && (
+              <form onSubmit={handleOtaSearch} className="firmware-form">
+                <div className="input-wrapper">
+                  <SearchOutlined className="input-icon" />
+                  <input
+                    type="text"
+                    placeholder="Device Codename (e.g. sweet)"
+                    value={otaCodename}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => setOtaCodename(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="input-wrapper">
+                  <GlobalOutlined className="input-icon" />
+                  <input
+                    type="text"
+                    placeholder="Version (e.g. OS1.0.1.0.TLIMIXM)"
+                    value={otaVersion}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => setOtaVersion(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <button type="submit" className="search-btn" disabled={otaLoading}>
+                  {otaLoading
+                    ? <><LoadingOutlined spin /> Searching...</>
+                    : <><SearchOutlined /> Find OTA</>
+                  }
+                </button>
+              </form>
+            )}
           </div>
 
-          {result && (
-            <div className="result-inline-container">
-              <div className="divider"></div>
-              {result.error ? (
-                <div className="result-content error-msg">❌ {result.error}</div>
-              ) : (
+          {formType === 'fastboot' && selectedDevice && (
+            <>
+              <div className="divider" />
+              <div className="result-inline-container">
                 <div className="result-content">
                   <div className="result-header-small">
-                    <h3>{result.device}</h3>
-                    <span className="version-tag">{result.version}</span>
+                    <h3>{selectedDevice.name}</h3>
+                    <span className="version-tag">Fastboot</span>
                   </div>
+                  <a
+                    href={selectedDevice.download_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-primary"
+                  >
+                    <DownloadOutlined /> Download ROM
+                  </a>
+                </div>
+              </div>
+            </>
+          )}
 
-                  <div className="info-row">
-                    <span><InfoCircleOutlined /> <strong>Android:</strong> {result.android_version}</span>
-                    <span><strong>Size:</strong> {result.filesize}</span>
-                  </div>
+          {formType === 'ota' && otaResult && (
+            <>
+              <div className="divider" />
+              <div className="result-inline-container">
+                {otaResult.error ? (
+                  <div className="result-content error-msg">❌ {otaResult.error}</div>
+                ) : (
+                  <div className="result-content">
+                    <div className="result-header-small">
+                      <h3>{otaResult.device}</h3>
+                      <span className="version-tag">{otaResult.version}</span>
+                    </div>
 
-                  <div className="download-actions">
-                    {result.download_url ? (
-                      <a href={result.download_url} target="_blank" className="btn-primary">
+                    <div className="info-row">
+                      <span><InfoCircleOutlined /> <strong>Android:</strong> {otaResult.android_version}</span>
+                      <span><strong>Size:</strong> {otaResult.filesize}</span>
+                    </div>
+
+                    {otaResult.download_url && (
+                      <a
+                        href={otaResult.download_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn-primary"
+                      >
                         <DownloadOutlined /> Download ROM
                       </a>
-                    ) : (
-                      <div className="mirrors-layout">
-                        {Object.entries(result.mirrors || {}).map(([name, url]) => (
-                          <a key={name} href={`${url}/${result.version}/${result.filename}`} target="_blank" className="btn-mirror">
-                            <ThunderboltOutlined /> {name}
-                          </a>
-                        ))}
-                      </div>
                     )}
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            </>
           )}
         </div>
       </section>
 
-      <div className="ticks"></div>
+      <div className="ticks" />
 
       <section id="next-steps">
         <div id="social">
           <h2>Connect</h2>
           <div className="social-links">
-
-            <a href="https://github.com/XiaomiUtils" target="_blank" className="social-card">
+            <a href="https://github.com/XiaomiUtils" target="_blank" rel="noreferrer" className="social-card">
               <GithubOutlined className="social-icon-big" />
               <div className="social-info">
                 <strong>GitHub</strong>
@@ -187,8 +263,8 @@ function App() {
         </div>
       </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <div className="ticks" />
+      <section id="spacer" />
     </>
   );
 }

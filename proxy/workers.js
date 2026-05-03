@@ -1,53 +1,72 @@
+const ALLOWED_ORIGINS = [
+  "https://miut.siakinnik.com"
+];
+
+// 路由映射：键为路径前缀，值为目标服务器的 base URL
+const ROUTE_MAP = {
+  "/ota/":      "https://update.miui.com",
+  "/fastboot/": "https://sgp-api.buy.mi.com/bbs/api/global/phone",
+};
+
 export default {
   async fetch(request) {
-    const url = new URL(request.url);
-    const path = url.pathname;
-
-    let targetUrl = "";
-    if (path.startsWith("/ota/")) {
-      targetUrl = "https://update.miui.com" + path.replace("/ota/", "/");
-    } else if (path.startsWith("/fastboot/")) {
-      targetUrl = "https://update.miui.com" + path.replace("/fastboot/", "/");
-    } else {
-      return new Response("Not Found", { status: 404 });
-    }
-
-    targetUrl += url.search;
-
-    // CORS Preflight
+    // Preflight CORS
     if (request.method === "OPTIONS") {
       return new Response(null, {
-        headers: {
-          "Access-Control-Allow-Origin": "https://miut.siakinnik.com",
-          "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type",
-          "Access-Control-Max-Age": "86400",
-        },
+        headers: corsHeaders(request),
       });
     }
 
+    const url  = new URL(request.url);
+    const path = url.pathname;
+
+    // 查找匹配的路由
+    const prefix = Object.keys(ROUTE_MAP).find(p => path.startsWith(p));
+    if (!prefix) {
+      return new Response("Not Found", { status: 404 });
+    }
+
+    // 截取前缀并构建目标 URL
+    // 示例：/fastboot/getlinepackagelist → /getlinepackagelist
+    const subPath    = path.slice(prefix.length - 1); // 保留开头的 /
+    const targetUrl  = ROUTE_MAP[prefix] + subPath + url.search;
+
+    const headers = new Headers(request.headers);
+    headers.set("User-Agent", "Xiaomi-Update/3.0");
+    headers.delete("host");
+
     const proxyRequest = new Request(targetUrl, {
-      method: request.method,
-      headers: {
-        "Host": new URL(targetUrl).host,
-        "User-Agent": "Xiaomi-Update/3.0",
-        "Content-Type": request.headers.get("Content-Type") || "application/x-www-form-urlencoded",
-      },
-      body: request.method === "POST" ? await request.arrayBuffer() : null,
-      redirect: "follow"
+      method:   request.method,
+      headers,
+      body:     request.method === "POST" ? await request.arrayBuffer() : null,
+      redirect: "follow",
     });
 
     try {
-      const response = await fetch(proxyRequest);
+      const response    = await fetch(proxyRequest);
       const newResponse = new Response(response.body, response);
-      
-      newResponse.headers.set("Access-Control-Allow-Origin", "https://miut.siakinnik.com");
-      newResponse.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-      newResponse.headers.set("Access-Control-Allow-Headers", "Content-Type");
-      
+      Object.entries(corsHeaders(request)).forEach(([k, v]) =>
+        newResponse.headers.set(k, v)
+      );
       return newResponse;
     } catch (e) {
-      return new Response("Error: " + e.message, { status: 500 });
+      return new Response(
+        JSON.stringify({ error: e.message }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders(request) } }
+      );
     }
+  },
+};
+
+function corsHeaders(request) {
+  const origin = request.headers.get("Origin");
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    return {
+      "Access-Control-Allow-Origin":  origin,
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Max-Age":       "86400",
+    };
   }
+  return {};
 }

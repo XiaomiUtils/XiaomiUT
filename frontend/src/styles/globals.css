@@ -31,8 +31,6 @@ body {
   color: var(--text-h);
 }
 
-/* ── Основная карточка ─────────────────────────────────────────────────────── */
-
 .main-card {
   width: 100%;
   max-width: 480px;
@@ -50,8 +48,6 @@ body {
   padding: 24px;
   flex-shrink: 0;
 }
-
-/* ── Вкладки ───────────────────────────────────────────────────────────────── */
 
 .type-selector {
   display: flex;
@@ -79,8 +75,6 @@ body {
   color: white;
   border-color: var(--accent);
 }
-
-/* ── Общие элементы формы ──────────────────────────────────────────────────── */
 
 .firmware-form {
   display: flex;
@@ -144,15 +138,12 @@ body {
   cursor: not-allowed;
 }
 
-/* ── Fastboot: выбор устройства ────────────────────────────────────────────── */
-
 .fastboot-picker {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-/* Статус загрузки / ошибки */
 .fastboot-status {
   text-align: center;
   padding: 32px 16px;
@@ -164,7 +155,6 @@ body {
   color: #ff6b6b;
 }
 
-/* Листбокс со списком устройств */
 .device-listbox {
   width: 100%;
   box-sizing: border-box;
@@ -175,7 +165,6 @@ body {
   color: var(--text-h);
   font-size: 13px;
   outline: none;
-  /* height задаётся атрибутом size, не переопределяем */
   transition: border-color 0.2s;
   cursor: pointer;
 }
@@ -197,14 +186,11 @@ body {
   color: white;
 }
 
-/* Счётчик найденных устройств */
 .device-count {
   font-size: 12px;
   color: var(--text);
   text-align: right;
 }
-
-/* ── Разделитель и результат ───────────────────────────────────────────────── */
 
 .divider {
   height: 1px;
@@ -265,8 +251,6 @@ body {
   gap: 6px;
 }
 
-/* ── Кнопки скачивания ─────────────────────────────────────────────────────── */
-
 .btn-primary {
   text-decoration: none;
   display: flex;
@@ -285,8 +269,6 @@ body {
 .btn-primary:hover {
   opacity: 0.85;
 }
-
-/* ── Нижняя секция ─────────────────────────────────────────────────────────── */
 
 #next-steps {
   display: flex;
@@ -354,14 +336,10 @@ body {
   border-top: 1px solid var(--border);
 }
 
-/* ── Анимации ──────────────────────────────────────────────────────────────── */
-
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
-/* ── Адаптив ───────────────────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
   #next-steps { flex-direction: column; }

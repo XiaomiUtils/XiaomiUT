@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
+import Head from 'next/head';
 import {
   SearchOutlined,
   DownloadOutlined,
@@ -9,23 +10,23 @@ import {
   ThunderboltOutlined,
   LoadingOutlined,
 } from '@ant-design/icons';
-import './App.css';
-import { fetchFirmware, fetchFastbootList } from './services/firmware';
-import type { FirmwareData, FastbootDevice } from './services/firmware';
 
-function App() {
+import { fetchFirmware, fetchFastbootList } from '../services/firmware';
+import type { FirmwareData, FastbootDevice } from '../services/firmware';
+
+export default function Home() {
   const [formType, setFormType] = useState<'fastboot' | 'ota'>('fastboot');
 
-  const [fastbootDevices, setFastbootDevices]   = useState<FastbootDevice[]>([]);
-  const [fastbootLoading, setFastbootLoading]   = useState(true);
-  const [fastbootError, setFastbootError]       = useState<string | null>(null);
-  const [fastbootFilter, setFastbootFilter]     = useState('');
-  const [selectedDevice, setSelectedDevice]     = useState<FastbootDevice | null>(null);
+  const [fastbootDevices, setFastbootDevices] = useState<FastbootDevice[]>([]);
+  const [fastbootLoading, setFastbootLoading] = useState(true);
+  const [fastbootError, setFastbootError] = useState<string | null>(null);
+  const [fastbootFilter, setFastbootFilter] = useState('');
+  const [selectedDevice, setSelectedDevice] = useState<FastbootDevice | null>(null);
 
   const [otaCodename, setOtaCodename] = useState('');
-  const [otaVersion, setOtaVersion]   = useState('');
-  const [otaLoading, setOtaLoading]   = useState(false);
-  const [otaResult, setOtaResult]     = useState<FirmwareData | null>(null);
+  const [otaVersion, setOtaVersion] = useState('');
+  const [otaLoading, setOtaLoading] = useState(false);
+  const [otaResult, setOtaResult] = useState<FirmwareData | null>(null);
 
   useEffect(() => {
     setFastbootLoading(true);
@@ -71,6 +72,12 @@ function App() {
 
   return (
     <>
+      <Head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>XiaomiUT - 小米官方固件查询工具</title>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+      </Head>
       <section id="center">
         <div className="hero">
           <h1>XiaomiUT</h1>
@@ -94,7 +101,7 @@ function App() {
               </button>
             </div>
 
-          
+
             {formType === 'fastboot' && (
               <div className="fastboot-picker">
                 {fastbootLoading && (
@@ -268,5 +275,3 @@ function App() {
     </>
   );
 }
-
-export default App;

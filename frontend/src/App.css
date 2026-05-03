@@ -31,10 +31,12 @@ body {
   color: var(--text-h);
 }
 
+/* ── Основная карточка ─────────────────────────────────────────────────────── */
+
 .main-card {
   width: 100%;
   max-width: 480px;
-  min-height: 520px; 
+  min-height: 520px;
   background: var(--social-bg);
   border: 1px solid var(--border);
   border-radius: 16px;
@@ -48,6 +50,8 @@ body {
   padding: 24px;
   flex-shrink: 0;
 }
+
+/* ── Вкладки ───────────────────────────────────────────────────────────────── */
 
 .type-selector {
   display: flex;
@@ -76,6 +80,8 @@ body {
   border-color: var(--accent);
 }
 
+/* ── Общие элементы формы ──────────────────────────────────────────────────── */
+
 .firmware-form {
   display: flex;
   flex-direction: column;
@@ -97,24 +103,23 @@ body {
   z-index: 1;
 }
 
-.firmware-form input, 
-.firmware-form select,
-.input-wrapper input, 
-.input-wrapper select {
+.firmware-form input,
+.input-wrapper input {
   width: 100%;
   height: 45px;
   box-sizing: border-box;
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 0 12px 0 40px;
   color: var(--text-h);
   font-size: 14px;
   outline: none;
+  transition: border-color 0.2s;
 }
 
-.firmware-form input:focus, 
-.firmware-form select:focus {
+.firmware-form input:focus,
+.input-wrapper input:focus {
   border-color: var(--accent);
 }
 
@@ -136,7 +141,70 @@ body {
 
 .search-btn:disabled {
   opacity: 0.5;
+  cursor: not-allowed;
 }
+
+/* ── Fastboot: выбор устройства ────────────────────────────────────────────── */
+
+.fastboot-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Статус загрузки / ошибки */
+.fastboot-status {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.fastboot-status.error {
+  color: #ff6b6b;
+}
+
+/* Листбокс со списком устройств */
+.device-listbox {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px;
+  color: var(--text-h);
+  font-size: 13px;
+  outline: none;
+  /* height задаётся атрибутом size, не переопределяем */
+  transition: border-color 0.2s;
+  cursor: pointer;
+}
+
+.device-listbox:focus {
+  border-color: var(--accent);
+}
+
+.device-listbox option {
+  padding: 8px 10px;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.device-listbox option:checked,
+.device-listbox option:hover {
+  background: var(--accent);
+  color: white;
+}
+
+/* Счётчик найденных устройств */
+.device-count {
+  font-size: 12px;
+  color: var(--text);
+  text-align: right;
+}
+
+/* ── Разделитель и результат ───────────────────────────────────────────────── */
 
 .divider {
   height: 1px;
@@ -151,18 +219,26 @@ body {
 
 .result-content {
   padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.result-content.error-msg {
+  color: #ff6b6b;
 }
 
 .result-header-small {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
 }
 
 .result-header-small h3 {
   margin: 0;
   color: var(--accent);
+  font-size: 15px;
+  line-height: 1.4;
 }
 
 .version-tag {
@@ -172,13 +248,14 @@ body {
   border-radius: 4px;
   font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
+  margin-left: 8px;
 }
 
 .info-row {
   display: flex;
   gap: 16px;
   font-size: 13px;
-  margin-bottom: 20px;
   color: var(--text);
 }
 
@@ -188,13 +265,9 @@ body {
   gap: 6px;
 }
 
-.mirrors-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
+/* ── Кнопки скачивания ─────────────────────────────────────────────────────── */
 
-.btn-primary, .btn-mirror {
+.btn-primary {
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -204,19 +277,16 @@ body {
   border-radius: 6px;
   font-size: 13px;
   font-weight: 500;
-  transition: 0.2s;
-}
-
-.btn-primary {
+  transition: opacity 0.2s;
   background: var(--accent);
   color: white;
 }
 
-.btn-mirror {
-  background: var(--accent-bg);
-  color: var(--accent);
-  border: 1px solid var(--accent);
+.btn-primary:hover {
+  opacity: 0.85;
 }
+
+/* ── Нижняя секция ─────────────────────────────────────────────────────────── */
 
 #next-steps {
   display: flex;
@@ -240,7 +310,7 @@ body {
   padding: 16px;
   border-radius: 12px;
   text-decoration: none;
-  transition: transform 0.2s;
+  transition: transform 0.2s, border-color 0.2s;
 }
 
 .social-card:hover {
@@ -284,10 +354,14 @@ body {
   border-top: 1px solid var(--border);
 }
 
+/* ── Анимации ──────────────────────────────────────────────────────────────── */
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ── Адаптив ───────────────────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
   #next-steps { flex-direction: column; }

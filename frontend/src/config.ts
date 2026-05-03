@@ -1,6 +1,7 @@
 // src/config.ts
 
 export const API_CONFIG = {
-    BASE_URL: 'https://api.12345678.com',
+    OTA_BASE_URL: 'https://api.miut.primelog.org/ota',
+    FASTBOOT_BASE_URL: 'https://api.miut.primelog.org/fastboot',
     TIMEOUT: 5000,
 };

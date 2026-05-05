@@ -1,6 +1,6 @@
 # XiaomiUT 🚀
 
-[English] | [简体中文](./README_zh-CN.md)
+[English] | [简体中文](./README.zh-CN.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 

@@ -40,7 +40,7 @@
 2. 将项目 `proxy/workers.js` 中的逻辑复制到 Worker 编辑器中。
 3. **关键步骤：** 修改 `Access-Control-Allow-Origin` 头部，将其设置为你的前端域名以确保安全：
    ```javascript
-   newResponse.headers.set("Access-Control-Allow-Origin", "[https://your-domain.com](https://your-domain.com)");
+   newResponse.headers.set("Access-Control-Allow-Origin", "https://your-domain.com");
    ```
 4. 部署并记录该 Worker 的 URL。
 
@@ -54,15 +54,15 @@
 
 1. 克隆仓库：
    ```sh
-   git clone [https://github.com/XiaomiUtils/XiaomiUT.git](https://github.com/XiaomiUtils/XiaomiUT.git)
+   git clone https://github.com/XiaomiUtils/XiaomiUT.git
    cd XiaomiUT/frontend
    ```
 
 2. 修改 `src/config.ts`，将 API 地址指向你的代理服务器：
    ```typescript
    export const API_CONFIG = {
-       OTA_BASE_URL: '[https://your-proxy.com/ota](https://your-proxy.com/ota)',
-       FASTBOOT_BASE_URL: '[https://your-proxy.com/fastboot](https://your-proxy.com/fastboot)',
+       OTA_BASE_URL: 'https://your-proxy.com/ota',
+       FASTBOOT_BASE_URL: 'https://your-proxy.com/fastboot',
        TIMEOUT: 5000,
    };
    ```

@@ -1,14 +1,10 @@
 # XiaomiUT 🚀
 
+[English](./README.md) | [简体中文]
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![Status: WIP](https://img.shields.io/badge/Status-进行中-orange)
 
 **XiaomiUT** 是一个致力于帮助用户直接从官方镜像站获取并下载小米官方固件的开源网站。**纯净无广告。**
-
-> [!WARNING]  
-> **本项目目前处于开发阶段 (WIP)。**  
-> 功能可能不稳定、不完整或随时发生重大变化。请谨慎使用。
-
 ---
 
 ## ✨ 核心功能 (开发中)
@@ -23,7 +19,7 @@
 ## 🛠 技术栈
 
 ### 前端 (Frontend):
-* **框架：** React 18 (Vite)
+* **框架：** [Next.js 14+](https://nextjs.org/) (Pages Router)
 * **语言：** TypeScript
 * **图标库：** @ant-design/icons
 
@@ -77,4 +73,4 @@
    npm run build
    ```
 
-4. 将 `frontend/dist` 目录下的内容上传至你的 Web 托管平台。
+4. 将 `frontend/out` 目录下的内容上传至你的 Web 托管平台。

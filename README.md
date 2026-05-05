@@ -6,9 +6,6 @@
 
 **XiaomiUT** is a website made to help users find and download official Xiaomi firmware directly from official mirrors. Adfree
 
-> [!WARNING]  
-> **This project is currently a Work In Progress (WIP).** > Features may be unstable, incomplete, or subject to major changes. Use with caution.
-
 ---
 
 ## ✨ Key Features (Planned & In Progress)

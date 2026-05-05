@@ -1,7 +1,8 @@
 # XiaomiUT 🚀
 
+[English] | [简体中文](./README_zh-CN.md)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![Status: WIP](https://img.shields.io/badge/Status-Work%20In%20Progress-orange)
 
 **XiaomiUT** is a website made to help users find and download official Xiaomi firmware directly from official mirrors. Adfree
 
@@ -23,7 +24,7 @@
 
 ### Frontend:
 
-* **Framework:** [React 18](https://reactjs.org/) (Vite)
+* **Framework:** [Next.js 14+](https://reactjs.org/) (Pages Router)
 * **Language:** [TypeScript](https://www.typescriptlang.org/)
 * **Icons:** [@ant-design/icons](https://ant-design.github.io/icons/)
 
@@ -83,4 +84,4 @@ export const API_CONFIG = {
     npm run build
    ```
 
-4. Deploy your `frontend/dist` to your hosting
+4. Deploy your `frontend/out` to your hosting

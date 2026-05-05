@@ -43,7 +43,7 @@ Xiaomi API servers have no CORS policies and browser block direct requests. You 
 3. **Important:** Update the `Access-Control-Allow-Origin` header to match your site's domain to ensure proper CORS security:
 
    ```javascript
-   newResponse.headers.set("Access-Control-Allow-Origin", "[https://your-domain.com](https://your-domain.com)");
+   newResponse.headers.set("Access-Control-Allow-Origin", "https://your-domain.com");
    ```
 4. Deploy and copy the Worker URL.
 
@@ -60,7 +60,7 @@ If you prefer using your own backend (Nginx, Node.js, PHP), ensure it:
 1. Clone the repository:
 
 ```sh
-git clone [https://github.com/XiaomiUtils/XiaomiUT.git](https://github.com/XiaomiUtils/XiaomiUT.git)
+git clone https://github.com/XiaomiUtils/XiaomiUT.git
 cd XiaomiUT/frontend
 ```
 
@@ -68,8 +68,8 @@ cd XiaomiUT/frontend
 
 ```typescript
 export const API_CONFIG = {
-    OTA_BASE_URL: '[https://your-proxy.com/ota](https://your-proxy.com/ota)',
-    FASTBOOT_BASE_URL: '[https://your-proxy.com/fastboot](https://your-proxy.com/fastboot)',
+    OTA_BASE_URL: 'https://your-proxy.com/ota',
+    FASTBOOT_BASE_URL: 'https://your-proxy.com/fastboot',
     TIMEOUT: 5000,
 };
 ```

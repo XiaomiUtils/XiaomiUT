@@ -13,6 +13,7 @@ import {
 
 import { fetchFirmware, fetchFastbootList } from '../services/firmware';
 import type { FirmwareData, FastbootDevice } from '../services/firmware';
+import Link from 'next/link';
 
 export default function Home() {
   const [formType, setFormType] = useState<'fastboot' | 'ota'>('fastboot');
@@ -271,6 +272,12 @@ export default function Home() {
       </section>
 
       <div className="ticks" />
+        <div className="ticks" />
+          <footer id="page-footer">
+            <Link href="/legal" className="footer-link">
+              Legal Information · EU &amp; DE Notice
+            </Link>
+      </footer>
       <section id="spacer" />
     </>
   );

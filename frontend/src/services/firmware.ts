@@ -67,7 +67,7 @@ const parseOtaVersion = (version: string) => {
     }
 
     const codeBaseMap: Record<string, string> = {
-        U: '14.0', T: '13.0', S: '12.0', R: '11.0',
+        W: '16.0', V: '15.0', U: '14.0', T: '13.0', S: '12.0', R: '11.0',
         Q: '10.0', P: '9.0',  O: '8.0',  N: '7.0', M: '6.0',
     };
 
